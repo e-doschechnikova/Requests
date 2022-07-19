@@ -1,7 +1,6 @@
 import React, { useState, KeyboardEvent, ChangeEvent } from "react";
 import { FilterValuesType } from "./App";
 
-
 export type TaskType = {
   id: string;
   title: string;
@@ -9,13 +8,15 @@ export type TaskType = {
 };
 
 type TodoListPropsType = {
+  todoListID: string;
   title: string;
   tasks: TaskType[];
   filter: FilterValuesType;
-  addTask: (title: string) => void;
-  removeTask: (taskID: string) => void;
-  changeFilter: (filter: FilterValuesType) => void;
-  changeTaskStatus: (taskID: string, isDone: boolean) => void;
+  addTask: (title: string, id: string) => void;
+  removeTask: (taskID: string, id: string) => void;
+  removeTodoList: (id: string) => void;
+  changeFilter: (filter: FilterValuesType, id: string) => void;
+  changeTaskStatus: (taskID: string, isDone: boolean, id: string) => void;
 };
 
 const TodoList = (props: TodoListPropsType) => {
@@ -24,11 +25,15 @@ const TodoList = (props: TodoListPropsType) => {
   const errorMessageStyles = { color: "hotpink" };
   const tasksListItems = props.tasks.length ? (
     props.tasks.map((task) => {
-      const removeTask = () => props.removeTask(task.id);
+      const removeTask = () => props.removeTask(task.id, props.todoListID);
       const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) =>
-        props.changeTaskStatus(task.id, e.currentTarget.checked);
+        props.changeTaskStatus(
+          task.id,
+          e.currentTarget.checked,
+          props.todoListID
+        );
       return (
-        <li>
+        <li key={task.id}>
           <input
             onChange={changeTaskStatus}
             type="checkbox"
@@ -46,7 +51,7 @@ const TodoList = (props: TodoListPropsType) => {
   const onClickAddTask = () => {
     const trimmedTitle = title.trim();
     if (trimmedTitle) {
-      props.addTask(trimmedTitle);
+      props.addTask(trimmedTitle, props.todoListID);
     } else {
       setError(true);
     }
@@ -62,12 +67,17 @@ const TodoList = (props: TodoListPropsType) => {
     setTitle(e.currentTarget.value);
   };
   const getChangeFilterHandler = (filter: FilterValuesType) => {
-    return () => props.changeFilter(filter);
+    return () => props.changeFilter(filter, props.todoListID);
   };
+
+  const removeTodoList = () => props.removeTodoList(props.todoListID);
 
   return (
     <div>
-      <h3>{props.title}</h3>
+      <h3>
+        {props.title}
+        <button onClick={removeTodoList}>x</button>
+      </h3>
       <div>
         <input
           value={title}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import TodoList, { TaskType } from "./TodoList";
 import { v1 } from "uuid";
+import { TLSSocket } from "tls";
 // CRUD => СRUD
 // GUI & CLI
 export type FilterValuesType = "all" | "active" | "completed";
@@ -17,7 +18,6 @@ type TaskStateType = {
 };
 
 function App() {
-  console.log(v1());
   // BLL:
   const todoListID_1 = v1();
   const todoListID_2 = v1();
@@ -58,10 +58,12 @@ function App() {
   };
 
   const changeFilter = (filter: FilterValuesType, todoListID: string) => {
+   
     setTodolists(
       todoLists.map((tl) => (tl.id === todoListID ? { ...tl, filter } : tl))
     );
   };
+
   const changeTaskStatus = (
     taskID: string,
     isDone: boolean,
@@ -81,31 +83,36 @@ function App() {
   };
 
   // UI:
-  let tasksForRender;
-  switch (filter) {
-    case "completed":
-      tasksForRender = tasks.filter((t) => t.isDone === true);
-      break;
-    case "active":
-      tasksForRender = tasks.filter((t) => t.isDone === false);
-      break;
-    default:
-      tasksForRender = tasks;
-  }
-  return (
-    <div className="App">
+
+  const todoListsComponents = todoLists.map((tl) => {
+    let tasksForRender;
+    switch (tl.filter) {
+      case "completed":
+        tasksForRender = tasks[tl.id].filter((t) => t.isDone);
+        break;
+      case "active":
+        tasksForRender = tasks[tl.id].filter((t) => !t.isDone);
+        break;
+      default:
+        tasksForRender = tasks[tl.id];
+    }
+    return (
       <TodoList
-        //id
-        title={title}
-        filter={filter}
+        key={tl.id}
+        todoListID={tl.id}
+        title={tl.title}
+        filter={tl.filter}
         tasks={tasksForRender}
         addTask={addTask}
         removeTask={removeTask}
+        removeTodoList={removeTodoList}
         changeFilter={changeFilter}
         changeTaskStatus={changeTaskStatus}
       />
-    </div>
-  );
+    );
+  });
+
+  return <div className="App">{todoListsComponents}</div>;
 }
 
 export default App;
