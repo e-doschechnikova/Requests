@@ -1,6 +1,6 @@
 import React, { useState, KeyboardEvent, ChangeEvent } from "react";
 import { FilterValuesType } from "./App";
-import Task from "./Task";
+
 
 export type TaskType = {
   id: string;
