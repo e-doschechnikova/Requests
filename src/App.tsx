@@ -21,7 +21,7 @@ function App() {
   // BLL:
   const todolistID_1 = v1();
   const todolistID_2 = v1();
-  const [todolists, setTodolists] = useState<Array<TodoListType>>([
+  const [todoLists, setTodolists] = useState<Array<TodoListType>>([
     { id: todolistID_1, title: "What to learn", filter: "all" },
     { id: todolistID_2, title: "What to buy", filter: "all" },
   ]);
@@ -58,17 +58,21 @@ function App() {
   };
 
   const changeFilter = (filter: FilterValuesType, todolistID: string) => {
-    setFilter(filter);
+    setTodolists(
+      todoLists.map((tl) => (tl.id === todolistID ? { ...tl, filter } : tl))
+    );
   };
   const changeTaskStatus = (
     taskID: string,
     isDone: boolean,
     todolistID: string
   ) => {
-    // 3, false
-    setTasks(
-      tasks.map((t) => (t.id === taskID ? { ...t, isDone: isDone } : t))
-    );
+    setTasks({
+      ...tasks,
+      [todolistID]: tasks[todolistID].map((t) =>
+        t.id === taskID ? { ...t, isDone: isDone } : t
+      ),
+    });
   };
 
   // UI:
