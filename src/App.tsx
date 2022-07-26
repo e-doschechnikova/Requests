@@ -3,6 +3,7 @@ import "./App.css";
 import TodoList, { TaskType } from "./TodoList";
 import { v1 } from "uuid";
 import { TLSSocket } from "tls";
+import { AddItemForm } from "./AddItemForm";
 // CRUD => СRUD
 // GUI & CLI
 export type FilterValuesType = "all" | "active" | "completed";
@@ -58,7 +59,6 @@ function App() {
   };
 
   const changeFilter = (filter: FilterValuesType, todoListID: string) => {
-   
     setTodolists(
       todoLists.map((tl) => (tl.id === todoListID ? { ...tl, filter } : tl))
     );
@@ -80,6 +80,17 @@ function App() {
   const removeTodoList = (todoListID: string) => {
     setTodolists(todoLists.filter((tl) => tl.id !== todoListID));
     delete tasks[todoListID];
+  };
+
+  const addTodoList = (title: string) => {
+    const newTodoListID = v1();
+    const newTodoList: TodoListType = {
+      id: newTodoListID,
+      title: title,
+      filter: "all",
+    };
+    setTodolists([newTodoList, ...todoLists]);
+    setTasks({ [newTodoListID]: [], ...tasks });
   };
 
   // UI:
@@ -112,7 +123,12 @@ function App() {
     );
   });
 
-  return <div className="App">{todoListsComponents}</div>;
+  return (
+    <div className="App">
+      <AddItemForm addItem={addTodoList} />
+      {todoListsComponents}
+    </div>
+  );
 }
 
 export default App;

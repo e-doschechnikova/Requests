@@ -1,4 +1,5 @@
 import React, { useState, KeyboardEvent, ChangeEvent } from "react";
+import { AddItemForm } from "./AddItemForm";
 import { FilterValuesType } from "./App";
 
 export type TaskType = {
@@ -20,9 +21,6 @@ type TodoListPropsType = {
 };
 
 const TodoList = (props: TodoListPropsType) => {
-  const [title, setTitle] = useState("");
-  const [error, setError] = useState<boolean>(false);
-  const errorMessageStyles = { color: "hotpink" };
   const tasksListItems = props.tasks.length ? (
     props.tasks.map((task) => {
       const removeTask = () => props.removeTask(task.id, props.todoListID);
@@ -48,46 +46,19 @@ const TodoList = (props: TodoListPropsType) => {
     <span>Your taskList is empty</span>
   );
 
-  const onClickAddTask = () => {
-    const trimmedTitle = title.trim();
-    if (trimmedTitle) {
-      props.addTask(trimmedTitle, props.todoListID);
-    } else {
-      setError(true);
-    }
-    setTitle("");
-  };
-  const onKeyDownAddTask = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.ctrlKey === true) {
-      onClickAddTask();
-    }
-  };
-  const onChangeSetTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    error && setError(false);
-    setTitle(e.currentTarget.value);
-  };
   const getChangeFilterHandler = (filter: FilterValuesType) => {
     return () => props.changeFilter(filter, props.todoListID);
   };
-
   const removeTodoList = () => props.removeTodoList(props.todoListID);
-
+  const addTask = (title: string) => props.addTask(title, props.todoListID);
+  
   return (
     <div>
       <h3>
         {props.title}
         <button onClick={removeTodoList}>x</button>
       </h3>
-      <div>
-        <input
-          value={title}
-          onChange={onChangeSetTitle}
-          onKeyDown={onKeyDownAddTask}
-          className={error ? "error" : ""}
-        />
-        <button onClick={onClickAddTask}>+</button>
-        {error && <div style={errorMessageStyles}>Title is required!</div>}
-      </div>
+      <AddItemForm addItem={addTask} />
       <ul>{tasksListItems}</ul>
       <div>
         <button

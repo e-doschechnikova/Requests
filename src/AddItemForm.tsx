@@ -4,7 +4,7 @@ type AddItemFormPropsType = {
   addItem: (title: string) => void;
 };
 
-const AddItemForm: React.FC<AddItemFormPropsType> = ({ addItem }) => {
+export const AddItemForm: React.FC<AddItemFormPropsType> = ({ addItem }) => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState<boolean>(false);
 
@@ -41,5 +41,3 @@ const AddItemForm: React.FC<AddItemFormPropsType> = ({ addItem }) => {
     </div>
   );
 };
-
-export default AddItemForm;
