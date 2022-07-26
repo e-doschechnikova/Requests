@@ -77,6 +77,19 @@ function App() {
     });
   };
 
+  const changeTaskTitle = (
+    taskID: string,
+    title: string,
+    todoListID: string
+  ) => {
+    setTasks({
+      ...tasks,
+      [todoListID]: tasks[todoListID].map((t) =>
+        t.id === taskID ? { ...t, title } : t
+      ),
+    });
+  };
+
   const removeTodoList = (todoListID: string) => {
     setTodolists(todoLists.filter((tl) => tl.id !== todoListID));
     delete tasks[todoListID];
@@ -86,7 +99,7 @@ function App() {
     const newTodoListID = v1();
     const newTodoList: TodoListType = {
       id: newTodoListID,
-      title: title,
+      title,
       filter: "all",
     };
     setTodolists([newTodoList, ...todoLists]);
@@ -119,6 +132,7 @@ function App() {
         removeTodoList={removeTodoList}
         changeFilter={changeFilter}
         changeTaskStatus={changeTaskStatus}
+        changeTaskTitle={changeTaskTitle}
       />
     );
   });
