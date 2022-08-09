@@ -40,12 +40,15 @@ function App() {
     ],
   });
 
+  //functions:
+
+  //task:
+
   const removeTask = (taskID: string, todoListID: string): void => {
     const copyTasks = { ...tasks };
     copyTasks[todoListID] = tasks[todoListID].filter((t) => t.id !== taskID);
     setTasks(copyTasks);
   };
-
   const addTask = (title: string, todoListID: string) => {
     const newTask: TaskType = {
       id: v1(),
@@ -57,13 +60,6 @@ function App() {
     setTasks(copyTasks);
     /*setTasks({...tasks, [todoListID]:[newTask, ...tasks[todoListID]]})*/
   };
-
-  const changeFilter = (filter: FilterValuesType, todoListID: string) => {
-    setTodolists(
-      todoLists.map((tl) => (tl.id === todoListID ? { ...tl, filter } : tl))
-    );
-  };
-
   const changeTaskStatus = (
     taskID: string,
     isDone: boolean,
@@ -76,25 +72,36 @@ function App() {
       ),
     });
   };
-
   const changeTaskTitle = (
-    taskID: string,
-    title: string,
-    todoListID: string
+      taskID: string,
+      title: string,
+      todoListID: string
   ) => {
     setTasks({
       ...tasks,
       [todoListID]: tasks[todoListID].map((t) =>
-        t.id === taskID ? { ...t, title } : t
+          t.id === taskID ? { ...t, title } : t
       ),
     });
+  };
+
+  //todolists:
+
+  const changeTodoListTitle = (title: string, todoListID: string) => {
+    setTodolists(
+        todoLists.map((tl) => (tl.id === todoListID ? { ...tl, title } : tl))
+    );
+  };
+  const changeFilter = (filter: FilterValuesType, todoListID: string) => {
+    setTodolists(
+        todoLists.map((tl) => (tl.id === todoListID ? { ...tl, filter } : tl))
+    );
   };
 
   const removeTodoList = (todoListID: string) => {
     setTodolists(todoLists.filter((tl) => tl.id !== todoListID));
     delete tasks[todoListID];
   };
-
   const addTodoList = (title: string) => {
     const newTodoListID = v1();
     const newTodoList: TodoListType = {
@@ -133,6 +140,7 @@ function App() {
         changeFilter={changeFilter}
         changeTaskStatus={changeTaskStatus}
         changeTaskTitle={changeTaskTitle}
+        changeTodoListTitle={changeTodoListTitle}
       />
     );
   });
